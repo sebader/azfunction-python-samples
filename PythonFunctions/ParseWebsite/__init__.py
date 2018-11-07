@@ -17,8 +17,15 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     if url:
 
         resultText = ""
+        try:
+            website = requests.get(url)
+        except requests.exceptions.RequestException as e:  
+            logging.exception(f"Exception during external get request: {e}")
+            return func.HttpResponse(
+                "Could not call external URL",
+                status_code=500
+        )
 
-        website = requests.get(url)
         soup = BeautifulSoup(website.content, 'html.parser')
         h1 = [''.join(s.findAll(text=True))for s in soup.findAll('h1')]
         if h1:
