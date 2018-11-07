@@ -24,12 +24,15 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             return func.HttpResponse(
                 "Could not call external URL",
                 status_code=500
-        )
+            )
 
         soup = BeautifulSoup(website.content, 'html.parser')
         h1 = [''.join(s.findAll(text=True))for s in soup.findAll('h1')]
         if h1:
-            resultText += h1[0] + '\n\n'    
+            # We simply assume there might be one h1 heading - and just take the first one (there shouldn't be really more than one h1)
+            resultText += h1[0] + '\n\n'   
+
+        # Text is assumed to be in <p> tags, so we grab all of those 
         text = [''.join(s.findAll(text=True))for s in soup.findAll('p')]
         for item in text:
             resultText += item
